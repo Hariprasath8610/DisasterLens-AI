@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Bot, Sparkles, Send, User, HelpCircle, CheckCircle2 } from 'lucide-react';
-import { sendAIChat } from '../../services/api';
+import React, { useState, useEffect } from 'react';
+import { Bot, Sparkles, Send, HelpCircle, AlertTriangle } from 'lucide-react';
+import { sendAIChat, fetchAIHealth } from '../../services/api';
 import { useApp } from '../../context/AppContext';
 
 const SUGGESTIONS = [
@@ -12,16 +12,34 @@ const SUGGESTIONS = [
 
 export default function AIAssistantView() {
   const { selectedLocation, riskData } = useApp();
+  const [aiStatus, setAiStatus] = useState({ reachable: true, model: 'qwen3:8b' });
   const [messages, setMessages] = useState([
     {
       sender: 'ai',
-      text: `Hello Dr. Vance. I am the DisasterLens AI Risk Synthesis Assistant. I am continuously grounded in live telemetry from ${selectedLocation.station}. How can I assist your catastrophe operations today?`,
+      text: `Hello Dr. Vance. I am the DisasterLens AI Risk Synthesis Assistant powered by local Qwen3 8B. I am continuously grounded in live telemetry from ${selectedLocation?.station || 'Palar Basin Hydro Station'}. How can I assist your catastrophe operations today?`,
       time: '12:00 IST',
-      confidence: 94.2,
+      confidence: 95.0,
+      model: 'qwen3:8b',
     },
   ]);
   const [inputQuery, setInputQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchAIHealth().then((res) => {
+      if (isMounted) {
+        setAiStatus({
+          reachable: res?.reachable !== false,
+          model: res?.target_model || 'qwen3:8b',
+          modelAvailable: res?.model_available,
+        });
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSend = async (queryText = inputQuery) => {
     const q = queryText.trim();
@@ -40,25 +58,38 @@ export default function AIAssistantView() {
     try {
       const response = await sendAIChat({
         userQuery: q,
-        location: selectedLocation.name,
+        location: selectedLocation?.name || 'Vellore District',
         disasterType: 'flood',
-        rainfall: riskData.telemetry.rainfall.value,
-        riverLevel: riskData.telemetry.riverLevel.value,
-        soilSaturation: riskData.telemetry.soil.saturation,
-        riskScore: riskData.compositeScore,
+        rainfall: riskData?.telemetry?.rainfall?.value ?? 86.0,
+        riverLevel: riskData?.telemetry?.riverLevel?.value ?? 3.4,
+        soilSaturation: riskData?.telemetry?.soil?.saturation ?? 84.0,
+        riskScore: riskData?.compositeScore ?? 72,
+        riskLevel: riskData?.riskLevel ?? 'HIGH',
       });
 
+      const isErr = Boolean(response?.error);
       const aiMsg = {
         sender: 'ai',
-        text: response.response,
+        text: response.response || 'No response received from local AI engine.',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        confidence: response.confidence || 94.2,
-        model: response.model || 'DisasterLens-XAI-v4.2',
+        confidence: response.confidence ?? (isErr ? 0 : 95.0),
+        model: response.model || 'qwen3:8b',
+        isError: isErr,
+        contributingFactors: response.contributingFactors || [],
+        recommendations: response.recommendations || [],
       };
 
       setMessages((prev) => [...prev, aiMsg]);
     } catch (err) {
-      console.error(err);
+      const errorMsg = {
+        sender: 'ai',
+        text: 'Ollama is not running. Please start Ollama (`ollama serve`) and try again.',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        confidence: 0,
+        model: 'qwen3:8b',
+        isError: true,
+      };
+      setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setIsLoading(false);
     }
@@ -77,13 +108,22 @@ export default function AIAssistantView() {
               DisasterLens AI Assistant
             </h2>
             <p className="font-mono text-[10px] text-on-surface-variant">
-              Grounded in HydroNet-v4 & Live Telemetry for {selectedLocation.name}
+              Local Qwen3 8B (Ollama) & Grounded Telemetry for {selectedLocation?.name || 'Vellore'}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-secondary font-mono text-[10px] font-semibold border border-outline-variant/20">
-          <Sparkles className="w-3 h-3 text-secondary" />
-          <span>LLM INTERFACE ACTIVE</span>
+        <div className="flex items-center gap-2">
+          {aiStatus.reachable ? (
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-semibold border border-emerald-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>OLLAMA ACTIVE ({aiStatus.model})</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-mono text-[10px] font-semibold border border-amber-200">
+              <AlertTriangle className="w-3 h-3 text-amber-500" />
+              <span>OLLAMA OFFLINE</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -98,6 +138,8 @@ export default function AIAssistantView() {
               className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-mono text-xs font-bold ${
                 msg.sender === 'user'
                   ? 'bg-primary-container text-white'
+                  : msg.isError
+                  ? 'bg-red-50 text-red-600 border border-red-200'
                   : 'bg-secondary-container/20 text-secondary border border-secondary/30'
               }`}
             >
@@ -108,10 +150,12 @@ export default function AIAssistantView() {
               className={`p-3.5 rounded-2xl font-sans text-xs sm:text-sm leading-relaxed ${
                 msg.sender === 'user'
                   ? 'bg-primary text-white rounded-tr-xs shadow-xs'
+                  : msg.isError
+                  ? 'bg-red-50/60 border border-red-200 text-red-900 rounded-tl-xs shadow-2xs'
                   : 'bg-surface-container-low border border-outline-variant/20 text-on-surface rounded-tl-xs shadow-2xs'
               }`}
             >
-              <p>{msg.text}</p>
+              <p className="whitespace-pre-wrap">{msg.text}</p>
 
               <div
                 className={`mt-2 flex items-center gap-2 font-mono text-[9px] ${
@@ -119,7 +163,7 @@ export default function AIAssistantView() {
                 }`}
               >
                 <span>{msg.time}</span>
-                {msg.confidence && (
+                {msg.confidence > 0 && (
                   <>
                     <span>·</span>
                     <span className="text-secondary font-semibold">Confidence {msg.confidence}%</span>
@@ -145,7 +189,7 @@ export default function AIAssistantView() {
               <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
               <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse delay-100" />
               <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse delay-200" />
-              <span>Synthesizing environmental causality...</span>
+              <span>Synthesizing environmental causality via Qwen3 8B...</span>
             </div>
           </div>
         )}

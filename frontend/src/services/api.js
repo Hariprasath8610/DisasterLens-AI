@@ -5,7 +5,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 async function fetchWithFallback(url, options = {}, fallbackData) {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
+    const timeoutMs = options.timeout || 5000;
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     const response = await fetch(`${API_BASE_URL}${url}`, {
       ...options,
       headers: {
@@ -27,6 +28,14 @@ async function fetchWithFallback(url, options = {}, fallbackData) {
 
 export async function fetchHealth() {
   return fetchWithFallback('/health', {}, { status: 'healthy', version: '1.0.0', engine: 'HydroNet-v4' });
+}
+
+export async function fetchAIHealth() {
+  return fetchWithFallback('/ai/health', { timeout: 4000 }, {
+    reachable: false,
+    model_available: false,
+    target_model: 'qwen3:8b'
+  });
 }
 
 export async function fetchWeather(lat, lon, location) {
@@ -89,35 +98,46 @@ export async function runSimulation(params) {
 }
 
 export async function sendAIChat(payload) {
-  const fallbackChat = () => {
-    const q = (payload.userQuery || payload.query || '').toLowerCase();
-    if (q.includes('rain') || q.includes('break')) {
-      return {
-        response: 'HydroNet-v4 recalculation: If a 2-hour rain break occurs between 19:00-21:00 IST, Palar Basin runoff velocity decelerates by 22%, shifting hazard score from 72/100 to 58/100.',
-        confidence: 94.2,
-        model: 'DisasterLens-XAI-v4.2',
-      };
-    }
-    if (q.includes('katpadi') || q.includes('underpass') || q.includes('ward')) {
-      return {
-        response: 'Topographic profile analysis: Depression at Katpadi Railway underpass will accumulate up to 0.65m standing water within 45 minutes of rain band arrival if Ward 12 dewatering pumps are unengaged.',
-        confidence: 96.1,
-        model: 'DisasterLens-XAI-v4.2',
-      };
-    }
-    return {
-      response: 'DisasterLens AI Analysis: Current precipitation and Doppler radar forecasts indicate severe inundation vulnerability in low-lying sub-basins. Palar River discharge has surged 38%, while soil saturation is at 84%. Upstream regulatory dam gating at Ponnai is strongly advised.',
-      confidence: 94.2,
-      model: 'DisasterLens-XAI-v4.2',
-    };
-  };
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 120000); // 120s for local LLM generation
 
-  return fetchWithFallback(
-    '/ai/chat',
-    {
+  try {
+    const response = await fetch(`${API_BASE_URL}/ai/chat`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(payload),
-    },
-    fallbackChat
-  );
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      let detailMsg = `AI service error (HTTP ${response.status})`;
+      try {
+        const errData = await response.json();
+        detailMsg = errData.detail || detailMsg;
+      } catch (_) {}
+      return {
+        response: detailMsg,
+        confidence: 0,
+        model: 'qwen3:8b',
+        error: true,
+      };
+    }
+
+    return await response.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    const isTimeout = err.name === 'AbortError';
+    return {
+      response: isTimeout
+        ? 'AI request timed out while generating response. The local Qwen3 8B model is under heavy load; please retry with a more specific query.'
+        : 'Ollama or backend service is unreachable. Please verify that FastAPI is running on port 8000 and Ollama is active with model qwen3:8b.',
+      confidence: 0,
+      model: 'qwen3:8b',
+      error: true,
+    };
+  }
 }
+
