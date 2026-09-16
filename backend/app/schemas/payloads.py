@@ -21,17 +21,26 @@ class SimulationResponse(BaseModel):
     recommendedMitigation: str
 
 class AIChatRequest(BaseModel):
-    userQuery: str = Field(..., description="The user query or scenario question")
+    userQuery: Optional[str] = Field(default=None, description="The user query or scenario question")
+    message: Optional[str] = Field(default=None, description="Alias for userQuery")
+    query: Optional[str] = Field(default=None, description="Alias for userQuery")
     location: Optional[str] = "Vellore District"
     disasterType: Optional[str] = "flood"
     rainfall: Optional[float] = 86.0
     riverLevel: Optional[float] = 3.4
     soilSaturation: Optional[float] = 84.0
     riskScore: Optional[int] = 72
+    riskLevel: Optional[str] = "HIGH"
+    historicalRisk: Optional[str] = None
+    forecast: Optional[str] = None
+
+    def get_query(self) -> str:
+        q = self.userQuery or self.message or self.query or ""
+        return q.strip()
 
 class AIChatResponse(BaseModel):
     response: str
     confidence: float = 94.2
-    model: str = "DisasterLens-XAI-v4.2"
+    model: str = "qwen3:8b"
     contributingFactors: List[str] = []
     recommendations: List[str] = []
