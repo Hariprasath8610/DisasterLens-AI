@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Bell, Layers, MapPin, Activity, ShieldCheck } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import Icon from '../common/Icon';
 
 export default function Header() {
   const { selectedLocation, autoSyncTime, notifications } = useApp();
@@ -37,7 +38,7 @@ export default function Header() {
             className="w-full flex items-center justify-between px-3.5 py-1.5 bg-surface rounded-xl border border-outline-variant/40 text-on-surface-variant hover:border-primary/40 hover:bg-surface-container-low transition-all shadow-2xs group"
           >
             <div className="flex items-center gap-2 text-on-surface-variant group-hover:text-on-surface">
-              <Search className="w-4 h-4 text-secondary" />
+              <Icon icon={Search} size="inline" className="text-secondary" />
               <span className="font-sans text-xs">
                 Search district, basin, or coordinates... ({selectedLocation.name})
               </span>
@@ -70,10 +71,10 @@ export default function Header() {
           <div className="flex items-center gap-1">
             <Link
               to="/alerts"
-              className="relative p-2 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all"
+              className="icon-button relative p-2 text-on-surface-variant hover:bg-surface-container-high hover:text-primary"
               title="Active Early Warning Alerts"
             >
-              <Bell className="w-4 h-4" />
+              <Icon icon={Bell} size="inline" />
               {notifications.length > 0 && (
                 <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-error text-white font-mono text-[9px] flex items-center justify-center font-bold">
                   {notifications.length}
@@ -83,10 +84,10 @@ export default function Header() {
 
             <Link
               to="/live-map"
-              className="p-2 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all"
+              className="icon-button p-2 text-on-surface-variant hover:bg-surface-container-high hover:text-primary"
               title="Interactive Live Earth Map"
             >
-              <Layers className="w-4 h-4" />
+              <Icon icon={Layers} size="inline" />
             </Link>
           </div>
 

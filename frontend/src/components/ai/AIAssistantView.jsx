@@ -73,7 +73,7 @@ export default function AIAssistantView() {
             <Bot className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="font-display font-bold text-sm text-on-surface">
+            <h2 className="type-section-title">
               DisasterLens AI Assistant
             </h2>
             <p className="font-mono text-[10px] text-on-surface-variant">

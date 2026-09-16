@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Radio, Check, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import Icon from '../components/common/Icon';
 
 export default function LocationSearchPage() {
   const { locations, selectedLocation, setSelectedLocation } = useApp();
@@ -26,7 +27,7 @@ export default function LocationSearchPage() {
         <span className="font-mono text-[10px] uppercase font-bold text-primary tracking-wider">
           GEOSPATIAL DIRECTORY & MONITORING BASINS
         </span>
-        <h1 className="font-display font-bold text-2xl text-on-surface">
+        <h1 className="type-page-title">
           Select Location or Sensor Grid
         </h1>
         <p className="font-sans text-xs sm:text-sm text-on-surface-variant">
@@ -35,7 +36,7 @@ export default function LocationSearchPage() {
 
         {/* Search Input Box */}
         <div className="mt-3 relative">
-          <Search className="w-4 h-4 text-secondary absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Icon icon={Search} size="inline" className="text-secondary absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchTerm}
@@ -71,7 +72,7 @@ export default function LocationSearchPage() {
                     isSelected ? 'bg-primary-container text-white' : 'bg-surface-container text-secondary'
                   }`}
                 >
-                  <MapPin className="w-5 h-5" />
+                  <Icon icon={MapPin} size="control" />
                 </div>
 
                 <div>
@@ -90,7 +91,7 @@ export default function LocationSearchPage() {
                     {loc.state}, {loc.country} · <strong className="text-on-surface">{loc.catchment}</strong>
                   </p>
                   <div className="flex items-center gap-2 font-mono text-[10px] text-on-surface-variant/80 mt-1">
-                    <Radio className="w-3 h-3 text-secondary" />
+                    <Icon icon={Radio} size={12} className="text-secondary" />
                     <span>{loc.station}</span>
                     <span>·</span>
                     <span>Elevation {loc.elevation}m</span>
@@ -104,7 +105,7 @@ export default function LocationSearchPage() {
                   className="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-primary-container hover:text-white text-on-surface font-sans text-xs font-semibold flex items-center gap-1.5 transition-all"
                 >
                   <span>Select</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <Icon icon={ArrowRight} size="inline" />
                 </button>
               </div>
             </div>

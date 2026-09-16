@@ -22,7 +22,7 @@ export default function Dashboard() {
         {/* Floating Top-Left Current Risk Evaluation Card */}
         <div className="absolute top-4 left-4 z-[400] w-72 sm:w-84 bg-surface-container-lowest/95 backdrop-blur-xl rounded-xl p-4 border border-outline-variant/30 shadow-xl flex flex-col gap-2.5">
           <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2">
-            <span className="font-mono text-[9px] uppercase tracking-wider text-on-surface-variant font-bold">
+            <span className="type-label">
               CURRENT RISK EVALUATION
             </span>
             <span className="font-mono text-[9px] text-secondary font-semibold">
@@ -44,7 +44,7 @@ export default function Dashboard() {
                   {riskData.deltaPercent}
                 </span>
               </div>
-              <h3 className="font-display font-bold text-xs text-on-surface mt-0.5">
+              <h3 className="type-card-title mt-0.5">
                 {riskData.primaryThreat}
               </h3>
               <p className="font-sans text-[11px] text-on-surface-variant leading-tight">

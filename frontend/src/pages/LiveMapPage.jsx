@@ -4,6 +4,7 @@ import MapView from '../components/map/MapView';
 import CartoDrawer from '../components/map/CartoDrawer';
 import AreaDossier from '../components/map/AreaDossier';
 import { useApp } from '../context/AppContext';
+import Icon from '../components/common/Icon';
 
 export default function LiveMapPage() {
   const { selectedLocation } = useApp();
@@ -17,7 +18,7 @@ export default function LiveMapPage() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-secondary-container animate-ping" />
-            <h1 className="font-display font-bold text-sm tracking-tight text-on-surface uppercase">
+            <h1 className="type-card-title uppercase">
               LIVE EARTH HAZARD MAP
             </h1>
           </div>
@@ -33,7 +34,7 @@ export default function LiveMapPage() {
             type="button"
             className="w-7 h-7 rounded-lg bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-2xs"
           >
-            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+            {isPlaying ? <Icon icon={Pause} size="inline" /> : <Icon icon={Play} size="inline" />}
           </button>
 
           <div className="flex flex-col min-w-[160px]">
@@ -52,7 +53,7 @@ export default function LiveMapPage() {
           </div>
 
           <div className="flex items-center gap-1 font-mono text-[10px] text-on-surface-variant pl-2 border-l border-outline-variant/30">
-            <Clock className="w-3.5 h-3.5 text-secondary" />
+            <Icon icon={Clock} size="inline" className="text-secondary" />
             <span>09:42:18 IST</span>
           </div>
         </div>
