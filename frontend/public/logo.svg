@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <defs>
+    <linearGradient id="lensGrad" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00A3BF"/>
+      <stop offset="50%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <radialGradient id="pulseGlow" cx="24" cy="24" r="16" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06B6D4" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Outer radar pulse ring -->
+  <circle cx="24" cy="24" r="21" stroke="#00A3BF" stroke-opacity="0.25" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <!-- Middle globe meridian circle -->
+  <circle cx="24" cy="24" r="16" stroke="#0284C7" stroke-width="1.75" stroke-opacity="0.4"/>
+  <ellipse cx="24" cy="24" rx="8" ry="16" stroke="#0284C7" stroke-width="1.5" stroke-opacity="0.35"/>
+  <line x1="8" y1="24" x2="40" y2="24" stroke="#0284C7" stroke-width="1.5" stroke-opacity="0.35"/>
+  <!-- Radar sweep / lens aperture arc -->
+  <path d="M24 8 A 16 16 0 0 1 40 24" stroke="url(#lensGrad)" stroke-width="3" stroke-linecap="round"/>
+  <!-- Core pulse glow -->
+  <circle cx="24" cy="24" r="9" fill="url(#pulseGlow)"/>
+  <!-- Center location beacon & radar ping dot -->
+  <circle cx="24" cy="24" r="4.5" fill="#00A3BF"/>
+  <circle cx="24" cy="24" r="2" fill="#FFFFFF"/>
+</svg>
