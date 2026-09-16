@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polygon, Circle, useMap } from 
 import L from 'leaflet';
 import { Navigation, ZoomIn, ZoomOut, Maximize2, Locate, AlertTriangle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import Icon from '../common/Icon';
 
 // Helper component to center map smoothly when selected location changes
 function MapViewController({ center, zoom }) {
@@ -244,36 +245,36 @@ export default function MapView({ height = '100%', className = '', showControls 
         <div className="absolute right-4 bottom-4 z-[400] flex flex-col gap-1 bg-white/95 backdrop-blur-md p-1 rounded-xl border border-outline-variant/30 shadow-md">
           <button
             onClick={handleZoomIn}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-700 hover:bg-slate-100 transition-colors"
+            className="icon-button w-8 h-8 text-slate-700 hover:bg-slate-100 hover:text-primary"
             title="Zoom In"
             type="button"
           >
-            <ZoomIn className="w-4 h-4" />
+            <Icon icon={ZoomIn} size="inline" />
           </button>
           <button
             onClick={handleZoomOut}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-700 hover:bg-slate-100 transition-colors"
+            className="icon-button w-8 h-8 text-slate-700 hover:bg-slate-100 hover:text-primary"
             title="Zoom Out"
             type="button"
           >
-            <ZoomOut className="w-4 h-4" />
+            <Icon icon={ZoomOut} size="inline" />
           </button>
           <div className="w-full h-px bg-slate-200 my-0.5" />
           <button
             onClick={handleResetNorth}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-700 hover:bg-slate-100 transition-colors"
+            className="icon-button w-8 h-8 text-slate-700 hover:bg-slate-100 hover:text-primary"
             title="Reset to Active Center"
             type="button"
           >
-            <Navigation className="w-4 h-4" />
+            <Icon icon={Navigation} size="inline" />
           </button>
           <button
             onClick={handleLocateMe}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-700 hover:bg-slate-100 transition-colors"
+            className="icon-button w-8 h-8 text-slate-700 hover:bg-slate-100 hover:text-primary"
             title="Locate Current Position"
             type="button"
           >
-            <Locate className="w-4 h-4" />
+            <Icon icon={Locate} size="inline" />
           </button>
         </div>
       )}

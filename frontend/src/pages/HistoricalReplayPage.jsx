@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { History, Calendar, GitCompare, ArrowRight, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { HISTORICAL_EVENTS } from '../data/mockData';
 import { useApp } from '../context/AppContext';
+import Icon from '../components/common/Icon';
 
 export default function HistoricalReplayPage() {
   const { selectedLocation } = useApp();
@@ -13,12 +14,12 @@ export default function HistoricalReplayPage() {
       <section className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <History className="w-4 h-4 text-primary" />
+            <span className="icon-chip w-7 h-7 bg-primary/10 text-primary"><Icon icon={History} size="inline" /></span>
             <span className="font-mono text-[10px] uppercase font-bold text-primary tracking-wider">
               MULTI-DECADE CATASTROPHE REPLAY ARCHIVE
             </span>
           </div>
-          <h1 className="font-display font-bold text-2xl text-on-surface mt-1">
+          <h1 className="type-page-title mt-1">
             Historical Replay & Event Analogues
           </h1>
           <p className="font-sans text-xs sm:text-sm text-on-surface-variant max-w-2xl">
@@ -49,7 +50,7 @@ export default function HistoricalReplayPage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 font-mono text-[10px] text-on-surface-variant">
-                    <Calendar className="w-3.5 h-3.5 text-secondary" />
+                  <Icon icon={Calendar} size="inline" className="text-secondary" />
                     <span>{evt.date}</span>
                   </div>
                   <span className="px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-mono text-[10px] font-bold">
@@ -117,7 +118,7 @@ export default function HistoricalReplayPage() {
           </div>
 
           <div className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200 flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" />
+            <Icon icon={ShieldCheck} size="control" className="text-emerald-700 mt-0.5" />
             <div>
               <h5 className="font-display font-bold text-xs text-emerald-900">
                 Actionable Countermeasure for Current 2026 Cycle

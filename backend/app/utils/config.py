@@ -16,8 +16,15 @@ class Settings(BaseSettings):
     ollama_timeout: float = float(os.getenv("OLLAMA_TIMEOUT", "120.0"))
     ollama_num_predict: int = int(os.getenv("OLLAMA_NUM_PREDICT", "450"))
 
-    # Optional Third-party Weather API
+    # Backend-only integrations (Windy, SMS, Risk Engine). Never expose to clients.
+    windy_api_key: str = os.getenv("WINDY_API_KEY", "")
+    windy_timeout_seconds: float = float(os.getenv("WINDY_TIMEOUT_SECONDS", "10.0"))
+    high_risk_threshold: int = int(os.getenv("HIGH_RISK_THRESHOLD", "80"))
+    sms_demo_mode: bool = os.getenv("SMS_DEMO_MODE", "true").lower() in ("true", "1", "yes")
+    sms_cooldown_minutes: int = int(os.getenv("SMS_COOLDOWN_MINUTES", "60"))
     openweather_api_key: str = os.getenv("OPENWEATHER_API_KEY", "")
+    gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
+    openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

@@ -53,9 +53,17 @@ export default {
       },
       fontFamily: {
         display: ["'Space Grotesk'", "sans-serif"],
-        sans: ["'Inter'", "'Manrope'", "sans-serif"],
-        manrope: ["'Manrope'", "sans-serif"],
+        sans: ["'Inter'", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
+      },
+      fontSize: {
+        "display-kpi": ["clamp(2rem, 4vw, 3.5rem)", { lineHeight: "0.95", letterSpacing: "-0.045em", fontWeight: "700" }],
+        "page-title": ["clamp(1.5rem, 2.5vw, 2rem)", { lineHeight: "1.1", letterSpacing: "-0.03em", fontWeight: "700" }],
+        "section-title": ["1rem", { lineHeight: "1.25", letterSpacing: "-0.015em", fontWeight: "600" }],
+        "card-title": ["0.875rem", { lineHeight: "1.35", letterSpacing: "-0.01em", fontWeight: "600" }],
+        "body-ui": ["0.875rem", { lineHeight: "1.55", letterSpacing: "0" }],
+        "label-ui": ["0.6875rem", { lineHeight: "1.25", letterSpacing: "0.1em", fontWeight: "600" }],
+        "data-ui": ["0.75rem", { lineHeight: "1.35", letterSpacing: "0.01em", fontWeight: "500" }],
       },
       borderRadius: {
         sm: "0.125rem",

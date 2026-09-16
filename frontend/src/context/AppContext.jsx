@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { LOCATIONS, DEFAULT_RISK_DATA, DISASTERS_LIST } from '../data/mockData';
+import { fetchWeather } from '../services/api';
 
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
   const [selectedLocation, setSelectedLocation] = useState(LOCATIONS[0]);
   const [riskData, setRiskData] = useState(DEFAULT_RISK_DATA);
+  const [weatherData, setWeatherData] = useState(null);
+  const [weatherStatus, setWeatherStatus] = useState('idle');
+  const [weatherError, setWeatherError] = useState(null);
   const [disasters, setDisasters] = useState(DISASTERS_LIST);
   const [activeDisasterType, setActiveDisasterType] = useState('flood');
   const [layerVisibility, setLayerVisibility] = useState({
@@ -33,6 +37,25 @@ export function AppProvider({ children }) {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    setWeatherStatus('loading');
+    setWeatherError(null);
+    setWeatherData(null);
+    fetchWeather(selectedLocation.lat, selectedLocation.lng, selectedLocation.name)
+      .then((data) => {
+        if (!active) return;
+        setWeatherData(data);
+        setWeatherStatus('success');
+      })
+      .catch((error) => {
+        if (!active) return;
+        setWeatherError(error.message || 'Unable to load live weather data.');
+        setWeatherStatus('error');
+      });
+    return () => { active = false; };
+  }, [selectedLocation.id, selectedLocation.lat, selectedLocation.lng, selectedLocation.name]);
+
   const toggleLayer = (layerKey) => {
     setLayerVisibility((prev) => ({
       ...prev,
@@ -55,6 +78,9 @@ export function AppProvider({ children }) {
         setSelectedLocation,
         riskData,
         setRiskData,
+        weatherData,
+        weatherStatus,
+        weatherError,
         disasters,
         setDisasters,
         activeDisasterType,
