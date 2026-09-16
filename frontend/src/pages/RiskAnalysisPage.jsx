@@ -5,6 +5,7 @@ import ShapAttributionBars from '../components/risk/ShapAttributionBars';
 import MitigatingRecommendations from '../components/risk/MitigatingRecommendations';
 import { sendAIChat } from '../services/api';
 import { useApp } from '../context/AppContext';
+import Icon from '../components/common/Icon';
 
 export default function RiskAnalysisPage() {
   const { selectedLocation, riskData } = useApp();
@@ -47,7 +48,7 @@ export default function RiskAnalysisPage() {
               LIVE INFERENCE SYNCED: 2m ago
             </span>
           </div>
-          <h1 className="font-display font-bold text-2xl text-on-surface tracking-tight">
+          <h1 className="type-page-title">
             RISK INTELLIGENCE & EXPLAINABILITY
           </h1>
           <p className="font-sans text-xs sm:text-sm text-on-surface-variant max-w-2xl">
@@ -56,8 +57,8 @@ export default function RiskAnalysisPage() {
         </div>
 
         <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs self-start md:self-auto">
-          <div className="w-9 h-9 rounded-lg bg-error-container/50 flex items-center justify-center text-error">
-            <ShieldAlert className="w-5 h-5" />
+          <div className="icon-chip w-9 h-9 bg-error-container/50 text-error">
+            <Icon icon={ShieldAlert} size="control" />
           </div>
           <div className="flex flex-col pr-2">
             <span className="font-mono text-[9px] uppercase text-on-surface-variant">Target Basin</span>
@@ -116,7 +117,7 @@ export default function RiskAnalysisPage() {
         <div className="flex items-center justify-between border-b border-outline-variant/20 pb-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-secondary-container/20 border border-secondary/30 text-secondary flex items-center justify-center">
-              <Brain className="w-4 h-4" />
+              <Icon icon={Brain} size="inline" />
             </div>
             <div>
               <h2 className="font-display font-bold text-base text-on-surface">
@@ -128,12 +129,12 @@ export default function RiskAnalysisPage() {
             </div>
           </div>
           <span className="font-mono text-[10px] text-secondary flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5" /> Validated against Palar Gauging Stations
+            <Icon icon={CheckCircle2} size="inline" /> Validated against Palar Gauging Stations
           </span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/20 flex items-start gap-2.5">
-          <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+          <Icon icon={HelpCircle} size="inline" className="text-primary mt-0.5" />
           <div>
             <span className="font-mono text-[9px] uppercase text-on-surface-variant">Investigated Query</span>
             <p className="font-display font-bold text-sm text-on-surface">
@@ -155,7 +156,7 @@ export default function RiskAnalysisPage() {
         <div className="pt-2">
           <div className="p-2 rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col sm:flex-row items-center gap-2">
             <div className="flex items-center gap-2 flex-1 px-2 text-on-surface-variant w-full">
-              <Sparkles className="w-4 h-4 text-secondary" />
+              <Icon icon={Sparkles} size="inline" className="text-secondary" />
               <input
                 type="text"
                 value={queryInput}
@@ -178,7 +179,7 @@ export default function RiskAnalysisPage() {
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <Icon icon={Sparkles} size="inline" />
                   <span>Ask AI About This Risk</span>
                 </>
               )}
@@ -188,7 +189,7 @@ export default function RiskAnalysisPage() {
           {analysisResponse && (
             <div className="mt-3 p-3.5 rounded-xl bg-surface-container border border-outline-variant/30 font-sans text-xs text-on-surface space-y-1">
               <div className="flex items-center gap-1.5 font-mono text-[10px] text-secondary font-semibold">
-                <CheckCircle2 className="w-3.5 h-3.5" />
+                <Icon icon={CheckCircle2} size="inline" />
                 <span>INFERENCE GENERATED</span>
               </div>
               <p className="leading-relaxed">{analysisResponse}</p>

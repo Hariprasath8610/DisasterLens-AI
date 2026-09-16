@@ -12,6 +12,7 @@ import {
   Radio,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import Icon from '../common/Icon';
 
 const NAV_ITEMS = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -39,7 +40,7 @@ export default function Sidebar() {
 
         <nav className="px-3 flex flex-col gap-1">
           {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
+            const NavIcon = item.icon;
             return (
               <NavLink
                 key={item.path}
@@ -55,7 +56,7 @@ export default function Sidebar() {
                 {({ isActive }) => (
                   <>
                     <div className="flex items-center gap-2.5">
-                      <Icon
+                      <Icon icon={NavIcon} size="inline"
                         className={`w-4 h-4 transition-colors ${
                           isActive ? 'text-white' : 'text-on-surface-variant group-hover:text-primary'
                         }`}
@@ -92,8 +93,8 @@ export default function Sidebar() {
               {selectedLocation.station.split(' (')[1]?.replace(')', '') || 'GEOS-18'}
             </span>
           </div>
-          <div className="w-7 h-7 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shadow-2xs">
-            <Radio className="w-4 h-4 animate-pulse" />
+          <div className="icon-chip w-7 h-7 bg-surface-container-lowest text-secondary shadow-2xs">
+            <Icon icon={Radio} size="inline" className="animate-pulse" />
           </div>
         </div>
       </div>

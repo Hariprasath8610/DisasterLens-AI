@@ -24,7 +24,7 @@ export default function OperationsBar() {
       <div className="flex flex-col md:flex-row md:items-center gap-4">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-secondary-container animate-ping" />
-          <h1 className="font-display font-bold text-lg tracking-tight text-on-surface uppercase">
+          <h1 className="type-section-title uppercase">
             LOCAL RISK INTELLIGENCE
           </h1>
         </div>

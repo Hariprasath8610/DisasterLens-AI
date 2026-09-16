@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Settings, Save, Server, Sliders, Bell, Globe, CheckCircle2 } from 'lucide-react';
+import Icon from '../components/common/Icon';
 
 export default function SettingsPage() {
   const [apiUrl, setApiUrl] = useState('http://localhost:8000/api');
@@ -18,12 +19,12 @@ export default function SettingsPage() {
     <div className="w-full p-4 sm:p-6 flex flex-col gap-6 max-w-4xl mx-auto">
       <section className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-1">
         <div className="flex items-center gap-2">
-          <Settings className="w-4 h-4 text-primary" />
+          <span className="icon-chip w-7 h-7 bg-primary/10 text-primary"><Icon icon={Settings} size="inline" /></span>
           <span className="font-mono text-[10px] uppercase font-bold text-primary tracking-wider">
             SYSTEM ARCHITECTURE & PROTOCOLS
           </span>
         </div>
-        <h1 className="font-display font-bold text-2xl text-on-surface">
+        <h1 className="type-page-title">
           Platform Settings
         </h1>
         <p className="font-sans text-xs sm:text-sm text-on-surface-variant">
@@ -35,7 +36,7 @@ export default function SettingsPage() {
         {/* Backend API Configuration */}
         <div className="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs space-y-3">
           <div className="flex items-center gap-2 border-b border-outline-variant/20 pb-2.5">
-            <Server className="w-4 h-4 text-secondary" />
+            <Icon icon={Server} size="inline" className="text-secondary" />
             <h3 className="font-display font-bold text-sm text-on-surface">
               Backend Service Gateway
             </h3>
@@ -58,7 +59,7 @@ export default function SettingsPage() {
         {/* Telemetry Polling & Sensitivity */}
         <div className="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs space-y-3">
           <div className="flex items-center gap-2 border-b border-outline-variant/20 pb-2.5">
-            <Sliders className="w-4 h-4 text-primary" />
+            <Icon icon={Sliders} size="inline" className="text-primary" />
             <h3 className="font-display font-bold text-sm text-on-surface">
               Telemetry Polling & Thresholds
             </h3>
@@ -96,7 +97,7 @@ export default function SettingsPage() {
         {/* AI & Synthesis Model Engine */}
         <div className="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs space-y-3">
           <div className="flex items-center gap-2 border-b border-outline-variant/20 pb-2.5">
-            <Globe className="w-4 h-4 text-secondary" />
+            <Icon icon={Globe} size="inline" className="text-secondary" />
             <h3 className="font-display font-bold text-sm text-on-surface">
               AI Risk Synthesis Architecture
             </h3>
@@ -122,13 +123,13 @@ export default function SettingsPage() {
             type="submit"
             className="px-5 py-2.5 rounded-xl bg-primary-container hover:bg-primary text-white font-display font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-all"
           >
-            <Save className="w-4 h-4" />
+            <Icon icon={Save} size="inline" />
             <span>Save Configuration</span>
           </button>
 
           {isSaved && (
             <span className="font-mono text-xs text-emerald-700 font-semibold flex items-center gap-1 animate-pulse">
-              <CheckCircle2 className="w-4 h-4" /> Configuration saved successfully.
+              <Icon icon={CheckCircle2} size="inline" /> Configuration saved successfully.
             </span>
           )}
         </div>

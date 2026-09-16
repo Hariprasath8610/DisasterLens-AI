@@ -8,7 +8,21 @@
     padding: 0;
     background-color: #f8f9ff;
     color: #0b1c30;
+    font-family: 'Inter', sans-serif;
   }
+
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
+}
+
+@layer components {
+  .type-page-title { @apply font-display text-page-title text-on-surface; }
+  .type-section-title { @apply font-display text-section-title text-on-surface; }
+  .type-card-title { @apply font-display text-card-title text-on-surface; }
+  .type-body { @apply font-sans text-body-ui text-on-surface-variant; }
+  .type-label { @apply font-mono text-label-ui uppercase text-on-surface-variant; }
+  .type-data { @apply font-mono text-data-ui text-on-surface-variant; }
+  .icon-button { @apply inline-flex items-center justify-center rounded-lg transition-all duration-150 ease-out hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40; }
+  .icon-chip { @apply inline-flex items-center justify-center rounded-lg transition-colors duration-150; }
 }
 
 /* Leaflet Container & Map Overrides for Clean Instrument Aesthetic */

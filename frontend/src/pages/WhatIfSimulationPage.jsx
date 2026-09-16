@@ -5,6 +5,7 @@ import SimulationComparison from '../components/simulation/SimulationComparison'
 import { runSimulation } from '../services/api';
 import { useApp } from '../context/AppContext';
 import { Download, Bookmark, Brain, CheckCircle2 } from 'lucide-react';
+import Icon from '../components/common/Icon';
 
 export default function WhatIfSimulationPage() {
   const { selectedLocation, riskData } = useApp();
@@ -105,7 +106,7 @@ export default function WhatIfSimulationPage() {
           <span className="font-mono text-[10px] uppercase tracking-wider text-secondary font-bold">
             Catastrophe Predictive Sandbox · HEC-RAS 2D
           </span>
-          <h1 className="font-display font-bold text-2xl text-on-surface uppercase mt-1">
+          <h1 className="type-page-title uppercase mt-1">
             WHAT-IF? ENVIRONMENTAL STRESS SIMULATION
           </h1>
           <p className="font-sans text-xs sm:text-sm text-on-surface-variant max-w-2xl">
@@ -119,7 +120,7 @@ export default function WhatIfSimulationPage() {
             type="button"
             className="px-3.5 py-2 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/30 font-sans text-xs font-semibold text-on-surface flex items-center gap-1.5 transition-colors"
           >
-            <Download className="w-4 h-4 text-secondary" />
+            <Icon icon={Download} size="inline" className="text-secondary" />
             <span>Export Simulation (GeoJSON)</span>
           </button>
           <button
@@ -127,7 +128,7 @@ export default function WhatIfSimulationPage() {
             type="button"
             className="px-3.5 py-2 rounded-xl bg-primary text-white hover:bg-primary-container font-sans text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
           >
-            <Bookmark className="w-4 h-4" />
+            <Icon icon={Bookmark} size="inline" />
             <span>Save Action Protocol</span>
           </button>
         </div>
@@ -163,7 +164,7 @@ export default function WhatIfSimulationPage() {
           <div className="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/30 shadow-xs space-y-3">
             <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2.5">
               <div className="flex items-center gap-2">
-                <Brain className="w-4 h-4 text-secondary" />
+                <Icon icon={Brain} size="inline" className="text-secondary" />
                 <h3 className="font-display font-bold text-xs uppercase tracking-wider text-on-surface">
                   DISASTERLENS AI SYNTHESIS PROJECTION
                 </h3>

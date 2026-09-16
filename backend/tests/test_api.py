@@ -1,6 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
+from app.utils.config import settings
 
 client = TestClient(app)
 
@@ -11,12 +12,47 @@ def test_health_endpoint():
     assert data["status"] == "healthy"
     assert "version" in data
 
-def test_weather_endpoint():
-    response = client.get("/api/weather?location=Vellore&lat=12.34&lon=79.13")
+def test_weather_endpoint_returns_normalized_windy_data(monkeypatch):
+    class FakeResponse:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {
+                "ts": [1720000000000],
+                "units": {
+                    "temp-surface": "K", "dewpoint-surface": "K", "past3hprecip-surface": "mm",
+                    "wind_u-surface": "m*s-1", "gust-surface": "m*s-1", "rh-surface": "%", "pressure-surface": "Pa",
+                },
+                "temp-surface": [300.15], "dewpoint-surface": [295.15], "past3hprecip-surface": [4.2],
+                "wind_u-surface": [3], "wind_v-surface": [4], "gust-surface": [7], "rh-surface": [72], "pressure-surface": [101325],
+            }
+
+    class FakeClient:
+        def __init__(self, **_kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *_args): pass
+        async def post(self, *_args, **_kwargs): return FakeResponse()
+
+    monkeypatch.setattr("app.services.weather_service.httpx.AsyncClient", FakeClient)
+    monkeypatch.setattr(settings, "windy_api_key", "test-key")
+    response = client.get("/api/weather?location=Vellore&lat=12.9165&lon=79.1325")
     assert response.status_code == 200
     data = response.json()
-    assert "rainfall" in data
-    assert data["rainfall"]["value"] == 86
+    assert data["rainfall"] == {"value": 4.2, "unit": "mm", "period": "Previous 3 hours"}
+    assert data["weather"]["temp"] == 27.0
+    assert data["weather"]["pressure"] == 1013.2
+    assert data["wind"]["speed"] == 18.0
+    assert data["dataQuality"]["isMockData"] is False
+
+def test_weather_rejects_invalid_coordinates():
+    response = client.get("/api/weather?lat=91&lon=79.1325")
+    assert response.status_code == 400
+
+def test_weather_requires_backend_key(monkeypatch):
+    monkeypatch.setattr(settings, "windy_api_key", "")
+    response = client.get("/api/weather?lat=12.9165&lon=79.1325")
+    assert response.status_code == 503
 
 def test_risk_endpoint():
     response = client.get("/api/risk?location=Vellore&disaster_type=flood")

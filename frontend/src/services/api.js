@@ -30,11 +30,22 @@ export async function fetchHealth() {
 }
 
 export async function fetchWeather(lat, lon, location) {
-  return fetchWithFallback(
-    `/weather?lat=${lat}&lon=${lon}&location=${encodeURIComponent(location)}`,
-    {},
-    DEFAULT_RISK_DATA.telemetry
-  );
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 12000);
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/weather?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&location=${encodeURIComponent(location)}`,
+      { signal: controller.signal }
+    );
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.detail || `Weather request failed (${response.status}).`);
+    return payload;
+  } catch (err) {
+    if (err.name === 'AbortError') throw new Error('Weather request timed out.');
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export async function fetchRisk(location, disasterType = 'flood') {
