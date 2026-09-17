@@ -64,7 +64,7 @@ class WeatherService:
         except httpx.RequestError as exc:
             raise WeatherApiError(502, "Windy Point Forecast API could not be reached.") from exc
 
-        if response.status_code in {401, 403}:
+        if response.status_code in {400, 401, 403}:
             raise WeatherApiError(response.status_code, "Windy API key was rejected.")
         if response.status_code == 429:
             raise WeatherApiError(429, "Windy API rate limit reached. Please try again later.")
