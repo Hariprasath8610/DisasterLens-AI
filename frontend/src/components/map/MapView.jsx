@@ -101,16 +101,28 @@ export default function MapView({ height = '100%', className = '', showControls 
 
   return (
     <div className={`relative w-full overflow-hidden bg-slate-100 rounded-xl ${className}`} style={{ height }}>
-      {/* Top Map HUD Bar */}
-      <div className="absolute top-3 left-3 z-[400] bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-outline-variant/40 shadow-xs flex items-center gap-2 font-mono text-[11px] text-on-surface select-none">
+      {/* Top Map HUD Bar with Live Risk & Source Metadata */}
+      <div className="absolute top-3 left-3 z-[400] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-outline-variant/40 shadow-md flex flex-wrap items-center gap-2 font-mono text-[11px] text-on-surface select-none">
         <span className="w-2 h-2 rounded-full bg-secondary-container animate-pulse" />
-        <span className="font-semibold text-primary">LIVE RISK FIELD</span>
+        <span className="font-bold text-primary">LIVE MAP</span>
         <span className="text-outline-variant">|</span>
-        <span className="text-on-surface-variant">
-          {selectedLocation.lat.toFixed(2)}°N · {selectedLocation.lng.toFixed(2)}°E
+        <span className="font-semibold text-slate-700 dark:text-slate-200">{selectedLocation.name}</span>
+        <span className="text-outline-variant">|</span>
+        <span className="text-slate-600 dark:text-slate-400">
+          Source: {riskData.source || 'Windy API'}
         </span>
         <span className="text-outline-variant">|</span>
-        <span className="text-tertiary">ELEVATION {selectedLocation.elevation}m</span>
+        <span className="px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
+          Mode: {riskData.mode || 'LIVE'}
+        </span>
+        <span className="text-outline-variant">|</span>
+        <span className="font-bold text-error">
+          Live Risk Score: {riskData.compositeScore}/100
+        </span>
+        <span className="text-outline-variant">|</span>
+        <span className="px-1.5 py-0.2 rounded bg-error-container text-on-error-container font-semibold">
+          {riskData.tier}
+        </span>
       </div>
 
       {/* Real Leaflet Map */}

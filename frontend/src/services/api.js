@@ -57,12 +57,113 @@ export async function fetchWeather(lat, lon, location) {
   }
 }
 
-export async function fetchRisk(location, disasterType = 'flood') {
+export async function fetchRisk(location, disasterType = 'flood', options = {}) {
+  const { lat, lon, rainfall, riverLevel, soilSaturation, windSpeed, drainageBlocked } = options;
+  const params = new URLSearchParams({
+    location,
+    disaster_type: disasterType,
+  });
+
+  if (lat !== undefined && lat !== null) params.append('lat', lat);
+  if (lon !== undefined && lon !== null) params.append('lon', lon);
+  if (rainfall !== undefined && rainfall !== null) params.append('rainfall', rainfall);
+  if (riverLevel !== undefined && riverLevel !== null) params.append('river_level', riverLevel);
+  if (soilSaturation !== undefined && soilSaturation !== null) params.append('soil_saturation', soilSaturation);
+  if (windSpeed !== undefined && windSpeed !== null) params.append('wind_speed', windSpeed);
+  if (drainageBlocked !== undefined && drainageBlocked !== null) params.append('drainage_blocked', drainageBlocked);
+
   return fetchWithFallback(
-    `/risk?location=${encodeURIComponent(location)}&disaster_type=${disasterType}`,
+    `/risk?${params.toString()}`,
     {},
     DEFAULT_RISK_DATA
   );
+}
+
+export async function evaluateAlert(score, mode = 'LIVE', location = 'Vellore District', details = {}) {
+  const endpoint = mode.toUpperCase() === 'LIVE' ? '/alerts/live' : '/alerts/simulation';
+  return fetchWithFallback(
+    endpoint,
+    {
+      method: 'POST',
+      body: JSON.stringify({ score, mode, location, details }),
+    },
+    {
+      triggered: score >= 80,
+      risk_score: score,
+      threshold: 80,
+      sms_status: 'DEMO',
+      recipient: '******8765',
+      timestamp: new Date().toISOString(),
+      alert: {
+        alertType: mode === 'LIVE' ? 'LIVE RISK ALERT' : 'DEMO ALERT',
+        mode,
+        riskScore: score,
+        threshold: 80,
+        smsStatus: 'DEMO',
+        smsRecipient: '******8765',
+        timestamp: new Date().toISOString(),
+      },
+    }
+  );
+}
+
+export async function evaluateLiveAlert(score, location = 'Vellore District', details = {}) {
+  return evaluateAlert(score, 'LIVE', location, details);
+}
+
+export async function evaluateSimulationAlert(score, location = 'Vellore District', details = {}) {
+  return evaluateAlert(score, 'SIMULATION', location, details);
+}
+
+export async function createWhatsAppAlert({ phone_number = '917373733474', risk_level = 'HIGH', location = 'Karur' } = {}) {
+  const response = await fetch(`${API_BASE_URL}/alerts/whatsapp`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      phone_number,
+      risk_level,
+      location,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}));
+    throw new Error(errorBody.detail || `Server responded with status ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+export async function sendTestSMS(message) {
+  return fetchWithFallback(
+    '/alerts/test-sms',
+    {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    },
+    {
+      success: true,
+      status: 'DEMO',
+      message_sid: 'SM_MOCK_FALLBACK',
+      recipient: '******3474',
+      provider: 'twilio',
+      timestamp: new Date().toISOString(),
+    }
+  );
+}
+
+export async function fetchAlertConfig() {
+  return fetchWithFallback(
+    '/alerts/config',
+    {},
+    { alertMode: 'demo', alertThreshold: 80, maskedRecipient: '******8765', cooldownMinutes: 60 }
+  );
+}
+
+export async function fetchAlertHistory() {
+  return fetchWithFallback('/alerts/history', {}, []);
 }
 
 export async function fetchDisasters() {

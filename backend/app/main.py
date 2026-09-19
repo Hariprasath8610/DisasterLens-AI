@@ -10,6 +10,7 @@ from app.routes.disasters import router as disasters_router
 from app.routes.history import router as history_router
 from app.routes.simulation import router as simulation_router
 from app.routes.ai import router as ai_router
+from app.routes.alerts import router as alerts_router
 
 app = FastAPI(
     title=settings.app_name,
@@ -34,6 +35,7 @@ app.include_router(disasters_router, prefix="/api")
 app.include_router(history_router, prefix="/api")
 app.include_router(simulation_router, prefix="/api")
 app.include_router(ai_router, prefix="/api")
+app.include_router(alerts_router, prefix="/api")
 
 @app.get("/")
 def root():
